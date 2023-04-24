@@ -28,8 +28,8 @@ SECRET_KEY = secret_file['SECRET_KEY']
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = eval(secret_file['DEBUG'])
 
-ALLOWED_HOSTS = ['TraveSheets.by', '127.0.0.1']
-CSRF_TRUSTED_ORIGINS = ['https://TraveSheets.by', 'https://127.0.0.1', 'http://TraveSheets.by', 'http://127.0.0.1']
+ALLOWED_HOSTS = ['radik1337blr.by', '127.0.0.1', '81.91.190.72']
+CSRF_TRUSTED_ORIGINS = ['http://radik1337blr.by', 'http://127.0.0.1/', 'http://81.91.190.72/']
 
 
 # Application definition
