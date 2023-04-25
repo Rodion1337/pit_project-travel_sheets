@@ -18,3 +18,8 @@ clean:
 	rm -rf .venv
 	find -iname "*.pyc" -delete
 	find TraveSheets -iname __pycache__ -delete
+
+migration: venv
+	: #create and run migrations
+	.venv/bin/python TraveSheets/manage.py makemigrations
+	.venv/bin/python TraveSheets/manage.py migrate
