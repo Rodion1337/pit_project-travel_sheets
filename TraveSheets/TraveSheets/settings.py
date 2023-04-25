@@ -21,7 +21,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-secret_file = json.loads(open(os.path.join(BASE_DIR, 'secret_information.env'), 'r').read())
+secret_file = json.loads(open(os.path.join(BASE_DIR, 'security_files.env'), 'r').read())
 SECRET_KEY = secret_file['SECRET_KEY']
 
 
@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'MyAppProject',
+    'UserInfo',
 ]
 
 MIDDLEWARE = [
@@ -58,7 +60,7 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [os.path.join(BASE_DIR, 'templates')],
-        'APP_DIRS': True,
+        'APP_DIRS': secret_file['APP_DIRS'],
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.debug',
