@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <title>{%block title%} {% endblock %}</title>
+    <style>
+        #navbar ul{
+          display: none;
+          background-color: #f90;
+          position: absolute;
+          top: 100%;
+        }
+        #navbar li:hover ul { display: block; }
+        #navbar, #navbar ul{
+          margin: 0;
+          padding: 0;
+          list-style-type: none;
+        }
+        #navbar {
+          height: 30px;
+          background-color: #666;
+          padding-left: 25px;
+          min-width: 470px;
+        }
+        #navbar li {
+          float: left;
+          position: relative;
+          height: 100%;
+        }
+        #navbar li a {
+          display: block;
+          padding: 6px;
+          width: 150px;
+          color: #fff;
+          text-decoration: none;
+          text-align: center;
+        }
+        #navbar ul li { float: none; }
+        #navbar li:hover { background-color: #f90; }
+        #navbar ul li:hover { background-color: #666; }
+      </style>
+    </head>
+    <body>
+      <input type="hidden" name="next" {% if equest.path != '' %} value="{{ request.GET.next }}" {% else %} value="index/" {% endif %}/>
+      <ul id="navbar">
+        <li><a href="/">Главная</a></li>
+        {% if user.is_authenticated %}
+        <li><a>User: {{ user.get_username }}</a>
+          <ul>
+            <li><a href="{% url 'Users:logout' %}?next={{request.path}}">Выход</a></li>
+            <li><a href="{% url 'Users:UserChangePassword' %}">Смена пароля</a></li>
+          </ul>
+        {% else %}
+        <li> <a>Вы не авторизованы</a>
+          <ul>
+            <li><a href="{% url 'Users:login' %}">Авторизация через сайт</a>
+          </ul>
+        {% endif %}
+        </li>
+      </ul>
+</head>
+<body>
+
+<div>
+{% block content%}
+{% endblock %}
+</div>
+</body>
+</html>
