@@ -128,3 +128,7 @@ dmypy.json
 # Pyre type checker
 .pyre/
 *.env
+*.vscode
+
+*change_password.html
+*register.html
