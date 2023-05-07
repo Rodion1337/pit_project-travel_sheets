@@ -1,35 +1,43 @@
 from django.db import models
 from django.contrib.auth.models import User
-from django.core.validators import FileExtensionValidator
+from django.core.validators import FileExtensionValidator, MaxValueValidator, MinValueValidator
 
 # Create your models here.
 
 
 class Cars(models.Model):
     '''
-    Модель автомобиля по которому будет производиться отчёт за использованное топливо:
+    Модель автомобиля по которому будет производиться отчёт
+    за использованное топливо:
     name_car - марка авто
     reg_numb_car - номер регистрационных знаков выданных в ГАИ
     driver_car - водитель ответственный за авто
     '''
     name_car = models.CharField(verbose_name='Марка авто', max_length=30)
-    reg_numb_car = models.TextField(verbose_name='Регистрационные знаки', unique=True,)
-    driver_car = models.ForeignKey(User, verbose_name='Водитель', on_delete=models.PROTECT,)
-    
+    reg_numb_car = models.TextField(verbose_name='Регистрационные знаки',
+                                    unique=True,)
+    driver_car = models.ForeignKey(User, verbose_name='Водитель',
+                                   on_delete=models.PROTECT,)
+
     def __str__(self) -> str:
         return self.name_car + ' ' + self.reg_numb_car
 
 
-
 class Fuel_norm_car(models.Model):
     '''
-    Модель для хранения полной информации о приказе и присвоенных нормах расхода топлива
+    Модель для хранения полной информации о приказе и присвоенных
+    нормах расхода топлива
     '''
-    def order_directory_path(instance, filename):
-        '''функция для присвоения пути хранения приказа с каталогизацией по авто и номеру приказа'''
-        return 'order_{0}/{1}.pdf'.format(instance.order_car.reg_numb_car, instance.order_number).replace(' ', '_')
-    
-    fuel=(
+    def order_directory_path(instance, filename: str) -> str:
+        '''
+        функция для присвоения пути хранения приказа с каталогизацией
+        по авто и номеру приказа
+        '''
+        return 'order_{0}/{1}.pdf'.format(instance.order_car.reg_numb_car,
+                                          instance.order_number).replace(' ',
+                                                                         '_')
+
+    fuel = (
         ('80', 'АИ-80'),
         ('76', 'АИ-76'),
         ('92', 'АИ-92'),
@@ -38,14 +46,24 @@ class Fuel_norm_car(models.Model):
         ('ДТ', 'ДТ'),
         (None, 'Марка топлива не указана'),
     )
-    order_number = models.TextField(verbose_name='Номер приказа',)
+    order_number = models.TextField(verbose_name='Номер приказа', unique=True, max_length=15)
     order_date = models.DateField(verbose_name='Дата приказа',)
-    order_car = models.ForeignKey(Cars, verbose_name='Автомобиль', on_delete=models.PROTECT,)
-    order_upd = models.DateField(verbose_name='Дата обновления', auto_now=True, )
-    order_create = models.DateField(verbose_name='Дата создания', auto_now_add=True, )
-    order_file = models.FileField(verbose_name='Скан приказа', upload_to=order_directory_path, max_length=100, validators=[FileExtensionValidator( ['pdf'] ) ])
+    order_car = models.ForeignKey(Cars, verbose_name='Автомобиль', on_delete=models.PROTECT, unique_for_date=order_date)
+
+    order_upd = models.DateField(verbose_name='Дата обновления', auto_now=True, editable=False)
+    order_create = models.DateField(verbose_name='Дата создания', auto_now_add=True, editable=False)
+
+    order_file = models.FileField(verbose_name='Скан приказа', upload_to=order_directory_path, max_length=100, validators=[FileExtensionValidator(['pdf'])], unique_for_date=order_date)
+
     order_fuel = models.CharField(verbose_name='Марка топлива', max_length=5, choices=fuel, default=None, )
-    fuel_consumption = models.FloatField(verbose_name='Норма расхода топлива', default=0)
-    
+
+    fuel_consumption = models.FloatField(verbose_name='Норма расхода топлива', default=0, help_text='Введите расход топлива в литрах на 100км')
+    fuel_coefficient_city = models.FloatField(verbose_name='Повышающий коэффициент на "город", %', default=0, validators=[MinValueValidator(0), MaxValueValidator(100)],help_text='Введите установленный повышающий коэффициент для крупных городов')
+    fuel_coefficient_cold = models.FloatField(verbose_name='Повышающий коэффициент на заморозки, %', default=0, validators=[MinValueValidator(0), MaxValueValidator(100)], help_text='Введите установленный повышающий коэффициент для низких температур')
+
+
     def __str__(self) -> str:
         return 'приказ №' + self.order_number + ' от ' + str(self.order_date)
+
+
+class 
