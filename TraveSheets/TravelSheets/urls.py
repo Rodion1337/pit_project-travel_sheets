@@ -1,4 +1,4 @@
-"""TraveSheets URL Configuration
+"""TravelSheets URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/4.1/topics/http/urls/
@@ -23,11 +23,11 @@ urlpatterns = [
     # path('', include('MyAppProject.urls')),
     path('accounts/', include('Users.urls')),
     # path('api/', include('api.urls')),
-    ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    ]
 
 
 if settings.DEBUG:
     import debug_toolbar
     urlpatterns = [
         path('__debug__/', include(debug_toolbar.urls)),
-    ] + urlpatterns
+    ] + urlpatterns + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
