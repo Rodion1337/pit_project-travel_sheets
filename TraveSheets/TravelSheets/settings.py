@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'MyAppProject.apps.MyappprojectConfig',
     'Users.apps.UsersConfig',
     'bootstrap4',
+    'debug_toolbar',
 ]
 
 MIDDLEWARE = [
@@ -53,6 +54,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 
 ROOT_URLCONF = 'TravelSheets.urls'
@@ -141,6 +143,13 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+#Tool Bar
+
+INTERNAL_IPS = [
+    "127.0.0.1",
+]
+
+#Настройки кэширования
 
 # CACHES = {
 #     'default':{
