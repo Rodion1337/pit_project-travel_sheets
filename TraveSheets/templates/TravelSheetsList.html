@@ -1,0 +1,74 @@
+{% extends "base.html"%}
+{% load static %}
+<hr>
+{% block content %}
+<link rel="stylesheet" href="{% static "style/table.css" %}" />
+<style>
+    table.iksweb{text-decoration: none;border-collapse:collapse;width:100%;text-align:center;}
+    table.iksweb th{font-weight:normal;font-size:14px; color:#000000;background-color:#ffffff;}
+    table.iksweb td{font-size:9px;color:#354251;}
+    table.iksweb td,table.iksweb th{white-space:pre-wrap;padding:11px 6px;line-height:9px;vertical-align: middle;border: 1px solid #000000;}	table.iksweb tr:hover{background-color:#969696}
+    table.iksweb tr:hover td{color:#000000;cursor:default;}
+</style>
+<table class='iksweb'>
+	<tbody>
+		<tr>
+			<th colspan="17">Работа водителя и автомобиля</th>
+            <th rowspan="5">кнопка</th>
+		</tr>
+		<tr>
+			<th rowspan="3">Число</th>
+			<th colspan="3">Время, час., мин.</th>
+			<th colspan="2">Показания спидометра</th>
+			<th rowspan="3">Суточный пробег, км</th>
+			<th colspan="5">Движение топлива</th>
+			<th colspan="3">Расход топлива, л</th>
+			<th>Автомобиль технически исправлен при выезде</th>
+			<th>При возвращении автомобиль</th>
+		</tr>
+		<tr>
+			<th rowspan="2">Выезда</th>
+			<th rowspan="2">Возвращения </th>
+			<th rowspan="2">В наряде</th>
+			<th rowspan="2">При выезде</th>
+			<th rowspan="2">При возвращении</th>
+			<th colspan="2">Остаток топлива</th>
+			<th colspan="3">Заправлено топлива</th>
+			<th rowspan="2">По норме</th>
+			<th rowspan="2">Фактически</th>
+			<th rowspan="2">экономия (+), перерасход (-)</th>
+			<th rowspan="2">(подпись) водителя</th>
+			<th rowspan="2">(подпись) водителя</th>
+		</tr>
+		<tr>
+			<th>При выезде</th>
+			<th>При возвращении</th>
+			<th>Марка топлива</th>
+			<th>Кол-во, л</th>
+			<th>Подпись заправщика</th>
+		</tr>
+		<tr>
+        {% for day in days %}
+			<td>01.01.2023</td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td><a href="{% url 'HW23:comment-upd' pk=comment.pk %}">Обновить данные</a></td>
+        {% endfor %}
+		</tr>
+	</tbody>
+</table>
+{% endblock %}
