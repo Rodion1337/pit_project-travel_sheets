@@ -6,15 +6,18 @@
 <style>
     table.iksweb{text-decoration: none;border-collapse:collapse;width:100%;text-align:center;}
     table.iksweb th{font-weight:normal;font-size:14px; color:#000000;background-color:#ffffff;}
-    table.iksweb td{font-size:9px;color:#354251;}
-    table.iksweb td,table.iksweb th{white-space:pre-wrap;padding:11px 6px;line-height:9px;vertical-align: middle;border: 1px solid #000000;}	table.iksweb tr:hover{background-color:#969696}
+    table.iksweb td{font-size:11px;color:#354251;}
+    table.iksweb td,table.iksweb th{white-space:pre-wrap;padding:11px 6px;line-height:9px;vertical-align: middle;border: 1px solid #000000;}
+	table.iksweb tr:hover{background-color:#969696}
     table.iksweb tr:hover td{color:#000000;cursor:default;}
 </style>
 <table class='iksweb'>
 	<tbody>
 		<tr>
 			<th colspan="17">Работа водителя и автомобиля</th>
-            <th rowspan="5">кнопка</th>
+			<th colspan="2">Маршрут следования</th>
+			<th colspan="2">Пробеги</th>
+            <th rowspan="4">кнопка</th>
 		</tr>
 		<tr>
 			<th rowspan="3">Число</th>
@@ -25,6 +28,10 @@
 			<th colspan="3">Расход топлива, л</th>
 			<th>Автомобиль технически исправлен при выезде</th>
 			<th>При возвращении автомобиль</th>
+			<th rowspan="3">Откуда</th>
+			<th rowspan="3">Куда</th>
+			<th rowspan="3">Город</th>
+			<th rowspan="3">За городом</th>
 		</tr>
 		<tr>
 			<th rowspan="2">Выезда</th>
@@ -39,6 +46,7 @@
 			<th rowspan="2">экономия (+), перерасход (-)</th>
 			<th rowspan="2">(подпись) водителя</th>
 			<th rowspan="2">(подпись) водителя</th>
+
 		</tr>
 		<tr>
 			<th>При выезде</th>
@@ -47,28 +55,32 @@
 			<th>Кол-во, л</th>
 			<th>Подпись заправщика</th>
 		</tr>
+		{% for day in days %}
 		<tr>
-        {% for day in days %}
-			<td>01.01.2023</td>
+			<td>{{ day.sheets_date|date:"d.m.Y" }}</td>
+			<td>8:30</td>
+			<td>17:30</td>
+			<td>8 ч.</td>
+			<td>{{ day.odometer_day_start }}</td>
+			<td>{{ day.odometer_day_finish }}</td>
+			<td>{{ day.odometer_on_day }}</td>
+			<td>{{ day.fuel_day_start }}</td>
+			<td>{{ day.fuel_day_fihish }}</td>
+			<td>{{ fuel_mark }}</td>
+			<td>{{ day.fuel_arrival }}</td>
+			<td></td>
+			<td>{{ day.fuel_used }}</td>
+			<td>{{ day.fuel_used_actually }}</td>
+			<td>{{ day.fuel_economy}}</td>
 			<td></td>
 			<td></td>
-			<td></td>
-			<td></td>
-			<td></td>
-			<td></td>
-			<td></td>
-			<td></td>
-			<td></td>
-			<td></td>
-			<td></td>
-			<td></td>
-			<td></td>
-			<td></td>
-			<td></td>
-			<td></td>
-			<td><a href="{% url 'HW23:comment-upd' pk=comment.pk %}">Обновить данные</a></td>
-        {% endfor %}
+			<td>{{ day.travel_itinerary_start }}</td>
+			<td>{{ day.travel_itinerary_finish }}</td>
+			<td>{{ day.odometer_on_day_in_city }}</td>
+			<td>{{ day.odometer_on_day_out_city }}</td>
+			<td>"кнопка ТЫК"</td>
 		</tr>
+        {% endfor %}
 	</tbody>
 </table>
 {% endblock %}
