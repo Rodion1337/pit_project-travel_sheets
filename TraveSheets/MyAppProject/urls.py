@@ -3,5 +3,5 @@ from MyAppProject import views
 
 app_name = 'MyApp'
 urlpatterns = [
-    path('<int:year>/<int:month>', views.TravelSheetsList, name='TravelSheetsList'),
+    path('<int:year>/<int:month>/', views.TravelSheetsListTable, name='TravelSheetsList'),
 ]

@@ -4,6 +4,16 @@ from django.core.validators import FileExtensionValidator, MaxValueValidator, Mi
 
 # Create your models here.
 
+fuel_mark = (
+    ('80', 'АИ-80'),
+    ('76', 'АИ-76'),
+    ('92', 'АИ-92'),
+    ('95', 'АИ-95'),
+    ('98', 'АИ-98'),
+    ('ДТ', 'ДТ'),
+    (None, 'Марка топлива не указана'),
+    )
+
 
 class Cars(models.Model):
     '''
@@ -15,15 +25,7 @@ class Cars(models.Model):
     fuel_car - марка топлива
     company_car - флаг отношения машины к компании
     '''
-    fuel_mark = (
-        ('80', 'АИ-80'),
-        ('76', 'АИ-76'),
-        ('92', 'АИ-92'),
-        ('95', 'АИ-95'),
-        ('98', 'АИ-98'),
-        ('ДТ', 'ДТ'),
-        (None, 'Марка топлива не указана'),
-        )
+
     name_car = models.CharField(verbose_name='Марка авто', max_length=30)
     reg_numb_car = models.CharField(verbose_name='Регистрационные знаки', unique=True, max_length=10)
     driver_car = models.ForeignKey(User, verbose_name='Водитель', on_delete=models.PROTECT)
@@ -79,16 +81,28 @@ class Fuel_norm_car(models.Model):
 
 class TravelSheetsList(models.Model):
     sheets_date = models.DateField(verbose_name='Отчетная дата',)
-    sheets_car = models.ForeignKey(Cars, verbose_name='Автомобиль', on_delete=models.PROTECT, unique_for_date='sheets_date', editable=False)
+    sheets_car = models.ForeignKey(Cars, verbose_name='Автомобиль', on_delete=models.PROTECT, unique_for_date='sheets_date')
+
     fuel_arrival = models.FloatField(verbose_name='Поступление топлива, литров', default=0, validators=[MinValueValidator(0), MaxValueValidator(100)],help_text='Введите количество залитого топлива за день в бак автомобиля')
-    fuel_used = models.FloatField(verbose_name='Использовано топлива', default=0, editable=False)
-    fuel_remain_date = models.FloatField(verbose_name='Остаток топлива', default=0, editable=False)
-    fuel_economy = models.FloatField(verbose_name='Экономия(+) / Перерасход(-)', default=0, editable=False)
-    odometer_day_start = models.FloatField(verbose_name='Показания одометра на начало дня', default=0, editable=False)
+    fuel_used = models.FloatField(verbose_name='Использовано топлива', default=0)
+    fuel_used_actually = models.FloatField(verbose_name='Использовано топлива фактически', default=0)
+    fuel_day_start = models.FloatField(verbose_name='Остаток топлива на начало дня', default=0)
+    fuel_day_fihish = models.FloatField(verbose_name='Остаток топлива на конец дня', default=0)
+    fuel_economy = models.FloatField(verbose_name='Экономия(+) / Перерасход(-)', default=0)
+
+    odometer_day_start = models.FloatField(verbose_name='Показания одометра на начало дня', default=0)
     odometer_on_day = models.FloatField(verbose_name='Показания одометра за день', default=0)
-    odometer_day_finish = models.FloatField(verbose_name='Показания одометра на конец дня', default=0, editable=False)
-    sheets_status = models.BooleanField(verbose_name='Статус требуется ли пересчитать данные за день', default=True, editable=False)
-    status_aprove = models.BooleanField(verbose_name='Статус согласования бухгалтером', default=False, editable=False)
+    odometer_day_finish = models.FloatField(verbose_name='Показания одометра на конец дня', default=0)
+    odometer_on_day_in_city = models.FloatField(verbose_name='пробег по городу', default=0)
+    odometer_on_day_out_city = models.FloatField(verbose_name='пробег за городом', default=0)
+
+    travel_itinerary_start = models.TextField(verbose_name='Маршрут следования откуда', null=True, default='')
+    travel_itinerary_finish = models.TextField(verbose_name='Маршрут следования куда', null=True, default='')
+
+    used_coefficient_cold = models.BooleanField(verbose_name='Приминение повышающего коэфициента на заморозки', default=False)
+
+    sheets_status = models.BooleanField(verbose_name='Статус требуется ли пересчитать данные за день', default=True)
+    status_approve = models.BooleanField(verbose_name='Статус согласования бухгалтером', default=False)
 
     def __str__(self) -> str:
         return (f'Путевой лист на {self.sheets_car.name_car} гос.номер {self.sheets_car.reg_numb_car} за {self.sheets_date.strftime("%d.%m.%Y")}')

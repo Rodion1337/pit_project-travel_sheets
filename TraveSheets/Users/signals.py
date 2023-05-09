@@ -9,5 +9,4 @@ def create_dop_info(sender, instance, created, **kwargs):
     if created:
         print(f'create user: {instance.username}')
         Profile.objects.create(user=instance)
-    else:
-        Profile.objects.get(user=instance)
+
