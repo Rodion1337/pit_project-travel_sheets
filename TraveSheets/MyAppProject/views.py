@@ -1,34 +1,58 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
 from MyAppProject.models import TravelSheetsList, Cars, User
 from django.contrib.auth.decorators import login_required
 from requests import request
 from calendar import monthrange
 from MyAppProject.models import fuel_mark
-from datetime import date
+from datetime import date, timedelta
+from MyAppProject.forms_app import SheetsList_DayUpdate
+from django.http import HttpResponse
+from django.urls import reverse_lazy, reverse
 
 # Create your views here.
 
-# @login_required(login_url='users:login')
-# class TravelSheetsListCreate(CreateView):
-#     model = TravelSheetsList
-#     template_name = 'TravelSheetsCreate.html'
-#     form_class = UserTravelSheetsList
-#     # success_url = reverse_lazy('HW23:games')
+
+class SheetsList_DayUpdateView(UpdateView):
+    model = TravelSheetsList
+    template_name = 'TravelSheetsUpdate.html'
+    form_class = SheetsList_DayUpdate
+    # success_url = reverse_lazy(next)
 
 
-@login_required(login_url='users:login')
+@login_required(login_url='Users:login')
 def TravelSheetsListTable(request, year, month):
-    # game_odj = get_object_or_404(Games, slug = game_slug)
     user_id = request.user.id
-    car = Cars.objects.get(driver_car=user_id)
+    car = get_object_or_404(Cars, driver_car = user_id)
     for i in fuel_mark:
         if i[0]==car.fuel_car:
             fuel_mark_print = i[1]
     sheets = TravelSheetsList.objects.filter(sheets_car=car, sheets_date__year=year, sheets_date__month=month).order_by('sheets_date')
     day_on_month = monthrange(year, month)[1]
     if len(sheets) != day_on_month:
-        print(f'не хватает дней, найдено {len(sheets)}, должно быть {day_on_month}')
         for i in range(1,day_on_month+1):
             sheets.get_or_create(sheets_date=(date(year,month,i)), sheets_car=car)
     return render(request, 'TravelSheetsList.html', context={'days':sheets, 'fuel_mark':fuel_mark_print})
+
+
+@login_required(login_url='Users:login')
+def TravelSheetsAll(request):
+    user_id = request.user.id
+    car = get_object_or_404(Cars, driver_car = user_id)
+    treetslist_all = TravelSheetsList.objects.filter(
+        sheets_car=car,status_approve=False).order_by(
+            '-sheets_date').values_list('sheets_date__year',
+                                        'sheets_date__month')
+    last_sheets_date = TravelSheetsList.objects.filter(sheets_car=car,status_approve=False).order_by('sheets_date').last().sheets_date
+    next_month = last_sheets_date + timedelta(days=1)
+    up_month = (f'{next_month.year}/{next_month.month}')
+    treetslist_list = list(set(treetslist_all))
+    year_month_list = {}
+    for i in treetslist_list:
+        if i[0] in year_month_list:
+            x = year_month_list[i[0]]
+            x.append(i[1])
+        else:
+            year_month_list.setdefault(i[0], [i[1],])
+
+    return render(request, 'index.html', context={'year_month_list':year_month_list,'up_month':up_month})

@@ -1,0 +1,28 @@
+{% extends "base.html"%}
+{% load static %}
+<hr>
+{% block content %}
+<link rel="stylesheet" href="{% static "style/table.css" %}" />
+<style>
+    table.iksweb{text-decoration: none;border-collapse:collapse;width:100%;text-align:center;}
+    table.iksweb th{font-weight:normal;font-size:14px; color:#000000;background-color:#ffffff;}
+    table.iksweb td{font-size:11px;color:#354251;}
+    table.iksweb td,table.iksweb th{white-space:pre-wrap;padding:11px 6px;line-height:9px;vertical-align: middle;border: 1px solid #000000;}
+	table.iksweb tr:hover{background-color:#969696}
+    table.iksweb tr:hover td{color:#000000;cursor:default;}
+</style>
+<table class='iksweb'>
+	<tbody>
+		<tr>
+        {% for key, value in year_month_list.items %}
+			<th>{{ key }}</th>
+            {% for month in value %}
+            <tr>
+                <td><a href="{{ key }}/{{ month }}/">{{ month }}</a></td>
+            {% endfor %}
+
+            </tr>
+            <td><a href="{{ up_month }}/">Добавить следующий месяц</a></td>
+        {% endfor %}
+        </tr>
+{% endblock %}

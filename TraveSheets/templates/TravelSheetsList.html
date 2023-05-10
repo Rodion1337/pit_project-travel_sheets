@@ -11,6 +11,7 @@
 	table.iksweb tr:hover{background-color:#969696}
     table.iksweb tr:hover td{color:#000000;cursor:default;}
 </style>
+<input type="hidden" name="next" {% if request.path != '' %} value="{{ request.GET.next }}" {% else %} value="list" {% endif %}/>
 <table class='iksweb'>
 	<tbody>
 		<tr>
@@ -78,7 +79,7 @@
 			<td>{{ day.travel_itinerary_finish }}</td>
 			<td>{{ day.odometer_on_day_in_city }}</td>
 			<td>{{ day.odometer_on_day_out_city }}</td>
-			<td>"кнопка ТЫК"</td>
+			<td><a href="{% url 'MyApp:day-upd' pk=day.pk %}?next={{request.path}}">Обновить</a></td>
 		</tr>
         {% endfor %}
 	</tbody>
