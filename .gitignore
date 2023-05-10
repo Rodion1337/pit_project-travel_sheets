@@ -129,6 +129,3 @@ dmypy.json
 .pyre/
 *.env
 *.vscode
-
-*change_password.html
-*register.html
