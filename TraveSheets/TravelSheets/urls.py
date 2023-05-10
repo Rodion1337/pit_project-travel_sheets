@@ -22,7 +22,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('list/', include('MyAppProject.urls')),
     path('accounts/', include('Users.urls')),
-    ]
+    ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
     # path('api/', include('api.urls')),
 
 if settings.DEBUG:

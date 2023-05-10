@@ -13,11 +13,12 @@ table.iksweb th {
 }
 
 table.iksweb td {
-    font-size: 9px;
+    font-size: 11px;
     color: #354251;
 }
 
-table.iksweb td, table.iksweb th {
+table.iksweb td,
+table.iksweb th {
     white-space: pre-wrap;
     padding: 11px 6px;
     line-height: 9px;

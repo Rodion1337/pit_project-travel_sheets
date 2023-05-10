@@ -2,7 +2,7 @@
 {% load static %}
 <hr>
 {% block content %}
-
+<div>
 <form method="post">
     {% csrf_token %}
     {{form.as_p}}
