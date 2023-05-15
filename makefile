@@ -1,6 +1,6 @@
 # Makefile
 
-all: install run
+start: install run
 
 install: venv
 	: # Activate venv and install smthing inside

@@ -12,17 +12,18 @@
     table.iksweb tr:hover td{color:#000000;cursor:default;}
 </style>
 <table class='iksweb'>
-	<tbody>
-		<tr>
+    <tbody>
+        <tr>
         {% for key, value in year_month_list.items %}
-			<th>{{ key }}</th>
+            <th>{{ key }}</th>
             {% for month in value %}
             <tr>
                 <td><a href="{{ key }}/{{ month }}/">{{ month }}</a></td>
+                <td><a href="{{ key }}/{{ month }}/">Распечатать</a></td>
             {% endfor %}
-
             </tr>
             <td><a href="{{ up_month }}/">Добавить следующий месяц</a></td>
         {% endfor %}
         </tr>
+    </tbody>
 {% endblock %}

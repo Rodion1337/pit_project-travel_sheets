@@ -31,6 +31,7 @@ def TravelSheetsListTable(request, year, month):
     day_on_month = monthrange(year, month)[1]
     if len(sheets) != day_on_month:
         for i in range(1,day_on_month+1):
+            print(year,month,i,car)
             sheets.get_or_create(sheets_date=(date(year,month,i)), sheets_car=car)
     return render(request, 'TravelSheetsList.html', context={'days':sheets, 'fuel_mark':fuel_mark_print})
 
@@ -54,5 +55,18 @@ def TravelSheetsAll(request):
             x.append(i[1])
         else:
             year_month_list.setdefault(i[0], [i[1],])
-
     return render(request, 'index.html', context={'year_month_list':year_month_list,'up_month':up_month})
+
+def TravelSheetsListTable_print(request, year, month):
+    user_id = request.user.id
+    car = get_object_or_404(Cars, driver_car = user_id)
+    for i in fuel_mark:
+        if i[0]==car.fuel_car:
+            fuel_mark_print = i[1]
+    sheets = TravelSheetsList.objects.filter(sheets_car=car, sheets_date__year=year, sheets_date__month=month).order_by('sheets_date')
+    day_on_month = monthrange(year, month)[1]
+    if len(sheets) != day_on_month:
+        for i in range(1,day_on_month+1):
+            # print(i,month,year,car,'day_on_month', day_on_month)
+            sheets.get_or_create(sheets_date=(date(year, month, i)), sheets_car=car)
+    return render(request, 'TravelSheetsList_print.html', context={'days':sheets, 'fuel_mark':fuel_mark_print})

@@ -15,40 +15,52 @@
 <table class='iksweb'>
 	<tbody>
 		<tr>
-			<th colspan="11">Работа водителя и автомобиля</th>
+			<th colspan="17">Работа водителя и автомобиля</th>
 			<th colspan="2">Маршрут следования</th>
 			<th colspan="2">Пробеги</th>
-            <th rowspan="4">кнопка</th>
 		</tr>
 		<tr>
 			<th rowspan="3">Число</th>
+			<th colspan="3">Время, час., мин.</th>
 			<th colspan="2">Показания одометра</th>
 			<th rowspan="3">Суточный пробег, км</th>
-			<th colspan="4">Движение топлива</th>
+			<th colspan="5">Движение топлива</th>
 			<th colspan="3">Расход топлива, л</th>
+			<th>Автомобиль технически исправлен при выезде</th>
+			<th>При возвращении автомобиль</th>
 			<th rowspan="3">Откуда</th>
 			<th rowspan="3">Куда</th>
 			<th rowspan="3">Город</th>
 			<th rowspan="3">За городом</th>
 		</tr>
 		<tr>
+			<th rowspan="2">Выезда</th>
+			<th rowspan="2">Возвращения </th>
+			<th rowspan="2">В наряде</th>
 			<th rowspan="2">При выезде</th>
 			<th rowspan="2">При возвращении</th>
 			<th colspan="2">Остаток топлива</th>
-			<th colspan="2">Заправлено топлива</th>
+			<th colspan="3">Заправлено топлива</th>
 			<th rowspan="2">По норме</th>
 			<th rowspan="2">Фактически</th>
 			<th rowspan="2">экономия (+), перерасход (-)</th>
+			<th rowspan="2">(подпись) водителя</th>
+			<th rowspan="2">(подпись) водителя</th>
+
 		</tr>
 		<tr>
 			<th>При выезде</th>
 			<th>При возвращении</th>
 			<th>Марка топлива</th>
 			<th>Кол-во, л</th>
+			<th>Подпись заправщика</th>
 		</tr>
 		{% for day in days %}
 		<tr>
 			<td>{{ day.sheets_date|date:"d.m.Y" }}</td>
+			<td>8:30</td>
+			<td>17:30</td>
+			<td>8 ч.</td>
 			<td>{{ day.odometer_day_start }}</td>
 			<td>{{ day.odometer_day_finish }}</td>
 			<td>{{ day.odometer_on_day }}</td>
@@ -56,14 +68,16 @@
 			<td>{{ day.fuel_day_fihish }}</td>
 			<td>{{ fuel_mark }}</td>
 			<td>{{ day.fuel_arrival }}</td>
+			<td></td>
 			<td>{{ day.fuel_used }}</td>
 			<td>{{ day.fuel_used_actually }}</td>
 			<td>{{ day.fuel_economy}}</td>
+			<td></td>
+			<td></td>
 			<td>{{ day.travel_itinerary_start }}</td>
 			<td>{{ day.travel_itinerary_finish }}</td>
 			<td>{{ day.odometer_on_day_in_city }}</td>
 			<td>{{ day.odometer_on_day_out_city }}</td>
-			<td><a href="{% url 'MyApp:day-upd' pk=day.pk %}?next={{request.path}}">Обновить</a></td>
 		</tr>
         {% endfor %}
 	</tbody>

@@ -5,15 +5,22 @@ from MyAppProject.models import Cars, Fuel_norm_car, TravelSheetsList
 
 
 class CarsAdmin(admin.ModelAdmin):
-    pass
+    search_fields = ('name_car', 'reg_numb_car', 'driver_car', 'fuel_car', 'company_car')
+    fields = ('name_car', 'reg_numb_car', 'driver_car', 'fuel_car', 'company_car')
+    list_display = ('name_car', 'reg_numb_car', 'driver_car', 'fuel_car', 'company_car')
+    list_filter = ('name_car', 'reg_numb_car', 'driver_car', 'fuel_car', 'company_car')
 
 
 class Fuel_norm_carAdmin(admin.ModelAdmin):
-    pass
+    search_fields = ('order_number', 'order_date', 'order_car')
+    list_display = ('order_number', 'order_date', 'order_car')
+    list_filter = ('order_number', 'order_date', 'order_car')
 
 
 class TravelSheetsListAdmin(admin.ModelAdmin):
-    pass
+    search_fields = ('sheets_car','sheets_date','sheets_status','status_approve')
+    list_display = ('sheets_car','sheets_date','sheets_status','status_approve')
+    list_filter = ('sheets_car','sheets_date','sheets_status','status_approve')
 
 
 admin.site.register(Cars, CarsAdmin)
