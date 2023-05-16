@@ -17,7 +17,9 @@ class SheetsList_DayUpdateView(UpdateView):
     model = TravelSheetsList
     template_name = 'TravelSheetsUpdate.html'
     form_class = SheetsList_DayUpdate
-    # success_url = reverse_lazy(next)
+
+    def get_success_url(self):
+        return self.request.GET.get('next')
 
 
 @login_required(login_url='Users:login')
