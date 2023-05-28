@@ -1,5 +1,6 @@
 from django.contrib import admin
 from MyAppProject.models import Cars, Fuel_norm_car, TravelSheetsList
+from MyAppProject import actions_admin
 
 # Register your models here.
 
@@ -18,10 +19,10 @@ class Fuel_norm_carAdmin(admin.ModelAdmin):
 
 
 class TravelSheetsListAdmin(admin.ModelAdmin):
-    search_fields = ('sheets_car','sheets_date','sheets_status','status_approve')
-    list_display = ('sheets_car','sheets_date','sheets_status','status_approve')
-    list_filter = ('sheets_car','sheets_date','sheets_status','status_approve')
-
+    search_fields = ('sheets_car', 'sheets_date', 'sheets_status', 'status_approve', 'sheets_car.driver_car')
+    list_display = ('sheets_car', 'sheets_date', 'sheets_status', 'status_approve')
+    list_filter = ('sheets_car', 'sheets_date', 'sheets_status', 'status_approve')
+    # actions = (actions_admin.status_approve, actions_admin.export_as_csv, )
 
 admin.site.register(Cars, CarsAdmin)
 admin.site.register(Fuel_norm_car, Fuel_norm_carAdmin)

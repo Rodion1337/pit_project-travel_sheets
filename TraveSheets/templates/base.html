@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
   {% load static %}
   <meta charset="UTF-8">
   <link rel="stylesheet" href="{% static "style/menu.css" %}" />
@@ -60,7 +59,7 @@
 
   <title>{%block title%} {% endblock %}</title>
   <input type="hidden" name="next" {% if equest.path != '' %} value="{{ request.GET.next }}" {% else %} value="index/" {% endif %}/>
-
+<head>
   <ul id="navbar">
     <li><a href="{% url 'MyApp:index' %}">Главная</a></li>
 

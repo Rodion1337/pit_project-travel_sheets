@@ -63,7 +63,11 @@
 			<td>{{ day.travel_itinerary_finish }}</td>
 			<td>{{ day.odometer_on_day_in_city }}</td>
 			<td>{{ day.odometer_on_day_out_city }}</td>
-			<td><a href="{% url 'MyApp:day-upd' pk=day.pk %}?next={{request.path}}">Обновить</a></td>
+			{% if day.status_approve %}
+				<td>Cогласовано бухгалетром</td>
+			{% else %}
+				<td><a href="{% url 'MyApp:day-upd' pk=day.pk %}?next={{request.path}}">Обновить</a></td>
+			{% endif %}
 		</tr>
         {% endfor %}
 	</tbody>

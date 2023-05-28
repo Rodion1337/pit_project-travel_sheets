@@ -28,13 +28,13 @@ class Cars(models.Model):
 
     name_car = models.CharField(verbose_name='Марка авто', max_length=30)
     reg_numb_car = models.CharField(verbose_name='Регистрационные знаки', unique=True, max_length=10)
-    driver_car = models.ForeignKey(User, verbose_name='Водитель', on_delete=models.PROTECT)
+    driver_car = models.OneToOneField(User, verbose_name='Водитель', on_delete=models.PROTECT)
     fuel_car = models.CharField(verbose_name='Марка топлива', max_length=5, choices=fuel_mark, default=None)
     company_car = models.BooleanField(verbose_name='Автомобиль компании', default=True)
     tank_car = models.FloatField(verbose_name='Объем бака в автомобиле', default=0, validators=[MinValueValidator(0), MaxValueValidator(300)], help_text='Введите объем бака установленного в автомобиле')
 
     def __str__(self) -> str:
-        return self.name_car + ' ' + self.reg_numb_car
+        return (f'{self.driver_car} {self.name_car} {self.reg_numb_car}')
 
     class Meta:
         verbose_name = 'Автомобиль'
@@ -93,9 +93,8 @@ class TravelSheetsList(models.Model):
     odometer_day_start = models.FloatField(verbose_name='Показания одометра на начало дня', default=0)
     odometer_on_day = models.FloatField(verbose_name='Показания одометра за день', default=0)
     odometer_day_finish = models.FloatField(verbose_name='Показания одометра на конец дня', default=0)
-    odometer_on_day_in_city = models.FloatField(verbose_name='пробег по городу', default=0)
-    odometer_on_day_out_city = models.FloatField(verbose_name='пробег за городом', default=0)
-
+    odometer_on_day_in_city = models.FloatField(verbose_name='пробег по городу', default=0, validators=[MinValueValidator(0), MaxValueValidator(99999)],help_text='Введите пробег по городу')
+    odometer_on_day_out_city = models.FloatField(verbose_name='пробег за городом', default=0, validators=[MinValueValidator(0), MaxValueValidator(99999)],help_text='Введите пробег за городом')
     travel_itinerary_start = models.TextField(verbose_name='Маршрут следования откуда', null=True, default='')
     travel_itinerary_finish = models.TextField(verbose_name='Маршрут следования куда', null=True, default='')
 

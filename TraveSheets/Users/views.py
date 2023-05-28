@@ -22,7 +22,6 @@ def register(request):
             form.save()
             username = form.cleaned_data.get('username')
             messages.success(request, f'Создан аккаунт {username}!')
-            print(next_url)
             return HttpResponseRedirect(next_url)
     else:
         form = UserCreationForm()
@@ -32,7 +31,7 @@ def register(request):
 def login_view(request):
     if request.method == 'POST':                                    #проверка типа обращения
         form = LoginForm(request.POST)                              #получение данных
-        next_url = request.POST.get('next', '/index')
+        next_url = request.POST.get('next') if request.POST.get('next') else reverse_lazy('MyApp:index')
         if form.is_valid():
             cd = form.cleaned_data
             user = authenticate(username=cd['username'], password=cd['password'])
