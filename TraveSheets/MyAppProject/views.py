@@ -9,6 +9,7 @@ from datetime import date, timedelta
 from MyAppProject.forms_app import SheetsList_DayUpdate
 from django.http import HttpResponse
 from django.urls import reverse_lazy, reverse
+from Users.models import Profile
 
 # Create your views here.
 
@@ -35,7 +36,6 @@ def TravelSheetsListTable(request, year, month):
     day_on_month = monthrange(year, month)[1]
     if len(sheets) != day_on_month:
         for i in range(1,day_on_month+1):
-            # print(year,month,i,car)
             sheets.get_or_create(sheets_date=(date(year,month,i)), sheets_car=car)
         sheets = TravelSheetsList.objects.filter(sheets_car=car, sheets_date__year=year, sheets_date__month=month).order_by('sheets_date')
     return render(request, 'TravelSheetsList.html', context={'days':sheets, 'fuel_mark':fuel_mark_print})
@@ -47,7 +47,9 @@ def TravelSheetsAll(request):
     user_id = request.user.id
     car = get_object_or_404(Cars, driver_car=user_id)
     treetslist_all = TravelSheetsList.objects.filter(sheets_car=car, sheets_date__day=28).values_list('sheets_date__year', 'sheets_date__month').order_by('-sheets_date')
-    next_month = TravelSheetsList.objects.filter(sheets_car=car).order_by('sheets_date').last().sheets_date + timedelta(days=1)
+    last_travel_sheets = TravelSheetsList.objects.filter(sheets_car=car).order_by('sheets_date').last()
+    print('last_travel_sheets', last_travel_sheets)
+    next_month = last_travel_sheets.sheets_date + timedelta(days=1) if last_travel_sheets else Profile.objects.get(user=user_id).last_approve + timedelta(days=1)
     up_month = (f'{next_month.year}/{next_month.month}')
     year_month_list = {}
     for i in treetslist_all:

@@ -100,7 +100,6 @@ class TravelSheetsList(models.Model):
 
     used_coefficient_cold = models.BooleanField(verbose_name='Приминение повышающего коэфициента на заморозки', default=False)
 
-    sheets_status = models.BooleanField(verbose_name='Статус требуется ли пересчитать данные за день', default=True)
     status_approve = models.BooleanField(verbose_name='Статус согласования бухгалтером', default=False)
 
     def __str__(self) -> str:

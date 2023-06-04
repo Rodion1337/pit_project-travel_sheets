@@ -30,43 +30,59 @@ def update_info_on_month(sender, instance, **kwargs):
     # получение набора дней за определенный месяц и год, с обновленной даты
     sheets_mount = TravelSheetsList.objects.filter(sheets_car=car, sheets_date__gte=sheets_date_signal).order_by('sheets_date')
 
-    for i in sheets_mount:
-        # цикл обработки каждого дня месяца
+    if not status_approve_signal:
+        for i in sheets_mount:
+            # цикл обработки каждого дня месяца
 
-        # получение последнего приказа устанавливающего норму расхода топлива
-        # на день пересчета или ранее
-        sheets_date = i.sheets_date  # обрабатываемая дата
-        fuel_norms_all = Fuel_norm_car.objects.filter(
-            order_car=car, order_date__lte=sheets_date).order_by(
-                'order_date').last()
-        fuel_norm = fuel_norms_all.fuel_consumption
-        fuel_coefficient_city = fuel_norms_all.fuel_coefficient_city
-        fuel_coefficient_cold = fuel_norms_all.fuel_coefficient_cold
+            # получение последнего приказа устанавливающего норму расхода топлива
+            # на день пересчета или ранее
+            sheets_date = i.sheets_date
+            fuel_norms_all = Fuel_norm_car.objects.filter(
+                order_car=car, order_date__lte=sheets_date).order_by(
+                    'order_date').last()
+            fuel_norm = fuel_norms_all.fuel_consumption
+            fuel_coefficient_city = fuel_norms_all.fuel_coefficient_city
+            fuel_coefficient_cold = fuel_norms_all.fuel_coefficient_cold
 
-        #  получение данных на конец предыдущего дня
-        sheet_yesterday = TravelSheetsList.objects.get(sheets_car=car, sheets_date=(sheets_date - timedelta(days=1)))
-        yesterday_day_fuel = sheet_yesterday.fuel_day_fihish
-        yesterday_day_odometer = sheet_yesterday.odometer_day_finish
+            #  получение данных на конец предыдущего дня
+            sheet_yesterday = TravelSheetsList.objects.filter(sheets_car=car)
+            if len(sheet_yesterday)==1:
+                print(True, len(sheet_yesterday), len(sheet_yesterday),
+                      sheet_yesterday)
+                sheet_yesterday = TravelSheetsList.objects.create(
+                    sheets_car=car, sheets_date=(
+                        sheets_date - timedelta(days=1)), status_approve=True)
+                print('create obj',sheet_yesterday)
+            else:
+                print(False, len(sheet_yesterday)==0, len(sheet_yesterday),
+                      sheet_yesterday)
+                sheet_yesterday = TravelSheetsList.objects.get(sheets_car=car, sheets_date=(sheets_date - timedelta(days=1)))
+            yesterday_day_fuel = sheet_yesterday.fuel_day_fihish
+            yesterday_day_odometer = sheet_yesterday.odometer_day_finish
 
-        #  передача данных для расчета показателей и получение данных
-        odometer_day_finish, fuel_used_on_day, fuel_day_finish, fuel_day_economy = remath_used_fuel(
-            fuel_norm, fuel_coefficient_city, fuel_coefficient_cold,
-            i.fuel_arrival, yesterday_day_fuel, yesterday_day_odometer,
-            i.odometer_on_day_in_city, i.odometer_on_day_out_city,
-            i.used_coefficient_cold)
-        fuel_used_on_day_norm = round(fuel_used_on_day - fuel_day_economy, 2)
-        odometer_on_day = i.odometer_on_day_in_city + i.odometer_on_day_out_city
+            #  передача данных для расчета показателей и получение данных
+            odometer_day_finish, fuel_used_on_day, fuel_day_finish, fuel_day_economy = remath_used_fuel(
+                fuel_norm, fuel_coefficient_city, fuel_coefficient_cold,
+                i.fuel_arrival, yesterday_day_fuel, yesterday_day_odometer,
+                i.odometer_on_day_in_city, i.odometer_on_day_out_city,
+                i.used_coefficient_cold)
+            fuel_used_on_day_norm = round(fuel_used_on_day - fuel_day_economy, 2)
+            odometer_on_day = i.odometer_on_day_in_city + i.odometer_on_day_out_city
 
-        #  обновление данных за пересчитанный день
-        day_update = TravelSheetsList.objects.get(sheets_car=car, sheets_date=sheets_date)
+            #  обновление данных за пересчитанный день
+            day_update = TravelSheetsList.objects.get(sheets_car=car, sheets_date=sheets_date)
 
-        day_update.fuel_used=fuel_used_on_day_norm
-        day_update.fuel_used_actually=fuel_used_on_day
-        day_update.fuel_day_start=yesterday_day_fuel
-        day_update.fuel_day_fihish=fuel_day_finish
-        day_update.fuel_economy=fuel_day_economy
-        day_update.odometer_day_start=yesterday_day_odometer
-        day_update.odometer_on_day=odometer_on_day
-        day_update.odometer_day_finish=odometer_day_finish
-        day_update.sheets_status=False
-        TravelSheetsList.objects.bulk_update([day_update],['fuel_used', 'fuel_used_actually', 'fuel_day_start', 'fuel_day_fihish', 'fuel_economy','odometer_day_start', 'odometer_on_day', 'odometer_day_finish', 'sheets_status',])
+            day_update.fuel_used = fuel_used_on_day_norm
+            day_update.fuel_used_actually = fuel_used_on_day
+            day_update.fuel_day_start = yesterday_day_fuel
+            day_update.fuel_day_fihish = fuel_day_finish
+            day_update.fuel_economy = fuel_day_economy
+            day_update.odometer_day_start = yesterday_day_odometer
+            day_update.odometer_on_day = odometer_on_day
+            day_update.odometer_day_finish = odometer_day_finish
+            TravelSheetsList.objects.bulk_update(
+                [day_update],['fuel_used', 'fuel_used_actually',
+                              'fuel_day_start', 'fuel_day_fihish',
+                              'fuel_economy','odometer_day_start',
+                              'odometer_on_day', 'odometer_day_finish',]
+                )
