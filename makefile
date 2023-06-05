@@ -23,3 +23,9 @@ migration: venv
 	: #create and run migrations
 	.venv/bin/python TraveSheets/manage.py makemigrations
 	.venv/bin/python TraveSheets/manage.py migrate
+
+lint: venv
+	pip freeze > requirements.txt
+	black .
+	isort .
+	# autopep8 ./ --recursive --in-place -a

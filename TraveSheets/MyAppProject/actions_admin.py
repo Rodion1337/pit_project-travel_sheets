@@ -1,28 +1,46 @@
-from django.contrib import admin
-from django.http import HttpResponse
 import datetime
 
+from django.contrib import admin
+from django.http import HttpResponse
 
-@admin.action(description = 'Проставления статуса согласования')
+
+@admin.action(description="Проставления статуса согласования")
 def status_approve(self, request, queryset):
-    for i in queryset.order_by('sheets_date'):
+    for i in queryset.order_by("sheets_date"):
         car = i.sheets_car
         date_sheets = i.sheets_date
-        self.model.objects.filter(sheets_car=car, sheets_date__lte=date_sheets, status_approve=False).update(status_approve=True)
+        self.model.objects.filter(
+            sheets_car=car, sheets_date__lte=date_sheets, status_approve=False
+        ).update(status_approve=True)
 
-    # queryset.update(status_approve=True)
-    self.message_user(request, 'Действие выполнено')
+    self.message_user(request, "Действие выполнено")
 
 
-@admin.action(description = 'выгрузка данных в формате .csv')
+@admin.action(description="выгрузка данных в формате .csv")
 def export_as_csv(self, request, queryset):
     import csv
-    response = HttpResponse(content_type='text/csv')
-    response['Content-Disposition'] = 'attachment; filename={}.csv;'.format(datetime.datetime.now())
-    response.write(u'\ufeff'.encode('utf8'))
+
+    response = HttpResponse(content_type="text/csv")
+    response["Content-Disposition"] = "attachment; filename={}.csv;".format(
+        datetime.datetime.now()
+    )
+    response.write("\ufeff".encode("utf8"))
     writer = csv.writer(response)
     from django.db.models import Field
-    writer.writerow([field.name for field in self.model._meta.get_fields() if isinstance(field, Field)])
+
+    writer.writerow(
+        [
+            field.name
+            for field in self.model._meta.get_fields()
+            if isinstance(field, Field)
+        ]
+    )
     for i in queryset:
-        writer.writerow([getattr(i,field.name) for field in i._meta.get_fields() if isinstance(field, Field)])
+        writer.writerow(
+            [
+                getattr(i, field.name)
+                for field in i._meta.get_fields()
+                if isinstance(field, Field)
+            ]
+        )
     return response
