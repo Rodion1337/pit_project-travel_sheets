@@ -16,7 +16,7 @@ venv:
 
 run:
 	: # Run app
-	.venv/bin/python TraveSheets/manage.py runserver
+	.venv/bin/python TraveSheets/manage.py runserver 192.168.1.5:8000
 
 clean:
 	rm -rf .venv
