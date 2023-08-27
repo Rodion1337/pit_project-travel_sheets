@@ -64,9 +64,9 @@ def update_info_on_month(sender, instance, **kwargs):
                 #     len(sheet_yesterday),
                 #     sheet_yesterday,
                 # )
-                sheet_yesterday = TravelSheetsList.objects.get(
-                    sheets_car=car, sheets_date=(sheets_date - timedelta(days=1))
-                )
+                sheet_yesterday = TravelSheetsList.objects.filter(
+                    sheets_car=car, sheets_date__lt=sheets_date
+                ).first()
             yesterday_day_fuel = sheet_yesterday.fuel_day_fihish
             yesterday_day_odometer = sheet_yesterday.odometer_day_finish
 

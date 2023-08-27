@@ -75,14 +75,10 @@ def math_fuel_norm(
     """
     fuel_norm_city = fuel_norm * (
         1
-        + (
-            fuel_coefficient_city
-            + (fuel_coefficient_cold if used_coefficient_cold else 0)
-        )
-        / 100
+        + (fuel_coefficient_city + fuel_coefficient_cold * used_coefficient_cold) / 100
     )
     fuel_norm_out_city = fuel_norm * (
-        1 + (fuel_coefficient_cold / 100 if used_coefficient_cold else 0)
+        1 + (fuel_coefficient_cold * used_coefficient_cold / 100)
     )
     return fuel_norm_city, fuel_norm_out_city
 
