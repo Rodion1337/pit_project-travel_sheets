@@ -5,6 +5,7 @@ start: install run
 install: venv migration
 	: # Activate venv and install smthing inside
 	. .venv/bin/activate && pip install -r requirements.txt
+	.venv/bin/python TraveSheets/manage.py createsuperuser
 
 venv:
 	: # Create venv if it doesn't exist
@@ -29,3 +30,6 @@ lint: venv
 	black .
 	isort .
 	# autopep8 ./ --recursive --in-place -a
+
+run_test:
+	.venv/bin/python TraveSheets/manage.py runserver
