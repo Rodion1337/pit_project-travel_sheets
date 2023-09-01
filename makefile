@@ -5,10 +5,6 @@ start: install run
 install: venv
 	: # Initial setup and preparation of the project for deployment
 	. .venv/bin/activate && pip install -r requirements.txt
-	.venv/bin/python app_install_secretfile.py
-	.venv/bin/python TraveSheets/manage.py makemigrations
-	.venv/bin/python TraveSheets/manage.py migrate
-	.venv/bin/python TraveSheets/manage.py createsuperuser
 
 venv:
 	: # Create venv if it doesn't exist
@@ -33,6 +29,3 @@ lint: venv
 	black .
 	isort .
 	# autopep8 ./ --recursive --in-place -a
-
-run_test:
-	.venv/bin/python TraveSheets/manage.py runserver 8000
