@@ -2,9 +2,10 @@
 
 start: install run
 
-install: venv migration
+install: venv
 	: # Activate venv and install smthing inside
 	. .venv/bin/activate && pip install -r requirements.txt
+	.venv/bin/python TraveSheets/manage.py migrate
 	.venv/bin/python TraveSheets/manage.py createsuperuser
 
 venv:
@@ -13,7 +14,7 @@ venv:
 
 run:
 	: # Run app
-	.venv/bin/python TraveSheets/manage.py runserver 192.168.1.5:8000
+	.venv/bin/python TraveSheets/manage.py runserver 8000
 
 clean:
 	rm -rf .venv
