@@ -50,6 +50,9 @@ def update_info_on_month(sender, instance, **kwargs):
 
             #  получение данных на конец предыдущего дня
             sheet_yesterday = TravelSheetsList.objects.filter(sheets_car=car)
+
+            # проверка месяца, на полноту в нем дней (если не все созданы),
+            # в случаи недостачи - создаются отсутствующие
             if len(sheet_yesterday) == 1:
                 sheet_yesterday = TravelSheetsList.objects.create(
                     sheets_car=car,
