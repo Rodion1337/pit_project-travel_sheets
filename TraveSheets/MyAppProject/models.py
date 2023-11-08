@@ -101,6 +101,7 @@ class Fuel_norm_car(models.Model):
         verbose_name="Норма расхода топлива",
         default=0,
         help_text="Введите расход топлива в литрах на 100км",
+        validators=[MinValueValidator(0), MaxValueValidator(300)]
     )
     fuel_coefficient_city = models.FloatField(
         verbose_name="Повышающий коэффициент при передвижении в городе, %",

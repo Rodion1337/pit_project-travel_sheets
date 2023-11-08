@@ -1,3 +1,5 @@
+from MyAppProject.models import TravelSheetsList
+
 def remath_used_fuel(
     fuel_norm: float,
     fuel_coefficient_city: float,
@@ -11,7 +13,7 @@ def remath_used_fuel(
 ) -> tuple:
     """Функция предназначена для расчета исходя из вводных данных показателей
     одометра на конец дня, пробег за день, остаток топлива на конец дня и
-    показатель экономии/пережега топлива
+    показатель экономии/пережога топлива
 
     Args:
         fuel_norm (float): норма расхода топлива, л/100км\n
@@ -25,8 +27,8 @@ def remath_used_fuel(
         начало расчетного дня\n
         odometer_on_day_in_city (float): количество км, пробега по городу\n
         odometer_on_day_out_city (float): количество км, пробега за городом\n
-        used_coefficient_cold (bool): Статус приминения повышающего
-        коэфициента на заморозки\n
+        used_coefficient_cold (bool): Статус применения повышающего
+        коэффициента на заморозки\n
 
     Returns:
         tuple: odometer_day_finish(float), fuel_used_on_day(float),
@@ -67,8 +69,8 @@ def math_fuel_norm(
         fuel_coefficient_city (float): Повышающий коэффициент при передвижении
         в городе, %\n
         fuel_coefficient_cold (float): Повышающий коэффициент на заморозки, %\n
-        used_coefficient_cold (bool): Статус приминения повышающего
-        коэфициента на заморозки\n
+        used_coefficient_cold (bool): Статус применения повышающего
+        коэффициента на заморозки\n
 
     Returns:
         tuple: fuel_norm_city (float), fuel_norm_out_city (float)
@@ -82,6 +84,27 @@ def math_fuel_norm(
     )
     return fuel_norm_city, fuel_norm_out_city
 
+
+def gen_month_days(sheets:object, car: object, year: int, month: int):
+    """Данная функция предназначена для создание в БД записей дней (дат) не достающих за месяц.
+
+    Args:
+        sheets - дополняемый месяц (объект)
+        user_id - числовой идентификатор пользователя
+        year - год
+        month - месяц
+    """
+    from calendar import monthrange
+    from datetime import date, timedelta
+
+    day_on_month = monthrange(year, month)[1]
+    if len(sheets) != day_on_month:
+        for i in range(1, day_on_month + 1):
+            sheets.get_or_create(sheets_date=(date(year, month, i)), sheets_car=car)
+        sheets = TravelSheetsList.objects.filter(
+            sheets_car=car, sheets_date__year=year, sheets_date__month=month
+        ).order_by("sheets_date")
+    return "complied"
 
 # print(math_fuel_norm(10, 5, 10, True))  # -> (11.5, 11.0)
 # print(math_fuel_norm(10, 5, 10, False))  # -> (10.5, 10)

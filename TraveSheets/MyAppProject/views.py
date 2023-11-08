@@ -10,6 +10,7 @@ from MyAppProject.forms_app import SheetsList_DayUpdate
 from MyAppProject.models import Cars, TravelSheetsList, User, fuel_mark
 from requests import request
 from Users.models import Profile
+from MyAppProject.functions import gen_month_days
 
 # Create your views here.
 
@@ -26,27 +27,39 @@ class SheetsList_DayUpdateView(UpdateView):
 
 @login_required(login_url="Users:login")
 def TravelSheetsListTable(request, year, month):
-    # Вывод талицы данных за месяц для обновления
+    # Вывод талицы данных за месяц для обновления или дополнения
     user_id = request.user.id
     car = get_object_or_404(Cars, driver_car=user_id)
+
     for i in fuel_mark:
         if i[0] == car.fuel_car:
             fuel_mark_print = i[1]
+
     sheets = TravelSheetsList.objects.filter(
         sheets_car=car, sheets_date__year=year, sheets_date__month=month
-    ).order_by("sheets_date")
-    day_on_month = monthrange(year, month)[1]
-    if len(sheets) != day_on_month:
-        for i in range(1, day_on_month + 1):
-            sheets.get_or_create(sheets_date=(date(year, month, i)), sheets_car=car)
-        sheets = TravelSheetsList.objects.filter(
-            sheets_car=car, sheets_date__year=year, sheets_date__month=month
         ).order_by("sheets_date")
-    return render(
+
+    if len(sheets) != monthrange(year, month)[1]:
+        # print(f'начата генерация {len(sheets)}')
+        if gen_month_days(sheets, car, year, month) == 'complied':
+            sheets = TravelSheetsList.objects.filter(
+            sheets_car=car, sheets_date__year=year, sheets_date__month=month
+            ).order_by("sheets_date")
+            # print(f'генерация окончена {len(sheets)}')
+            return render(
+            request,
+            "TravelSheetsList.html",
+            context={"days": sheets, "fuel_mark": fuel_mark_print},
+            )
+    else:
+        # print('без генерации')
+        return render(
         request,
         "TravelSheetsList.html",
         context={"days": sheets, "fuel_mark": fuel_mark_print},
-    )
+        )
+
+
 
 
 @login_required(login_url="Users:login")
