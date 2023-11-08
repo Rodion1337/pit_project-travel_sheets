@@ -1,5 +1,7 @@
 from MyAppProject.models import TravelSheetsList
 
+from MyAppProject.models import TravelSheetsList
+
 def remath_used_fuel(
     fuel_norm: float,
     fuel_coefficient_city: float,
@@ -14,6 +16,7 @@ def remath_used_fuel(
     """Функция предназначена для расчета исходя из вводных данных показателей
     одометра на конец дня, пробег за день, остаток топлива на конец дня и
     показатель экономии/пережога топлива
+    показатель экономии/пережога топлива
 
     Args:
         fuel_norm (float): норма расхода топлива, л/100км\n
@@ -27,6 +30,8 @@ def remath_used_fuel(
         начало расчетного дня\n
         odometer_on_day_in_city (float): количество км, пробега по городу\n
         odometer_on_day_out_city (float): количество км, пробега за городом\n
+        used_coefficient_cold (bool): Статус применения повышающего
+        коэффициента на заморозки\n
         used_coefficient_cold (bool): Статус применения повышающего
         коэффициента на заморозки\n
 
@@ -71,6 +76,8 @@ def math_fuel_norm(
         fuel_coefficient_cold (float): Повышающий коэффициент на заморозки, %\n
         used_coefficient_cold (bool): Статус применения повышающего
         коэффициента на заморозки\n
+        used_coefficient_cold (bool): Статус применения повышающего
+        коэффициента на заморозки\n
 
     Returns:
         tuple: fuel_norm_city (float), fuel_norm_out_city (float)
@@ -105,6 +112,7 @@ def gen_month_days(sheets:object, car: object, year: int, month: int):
             sheets_car=car, sheets_date__year=year, sheets_date__month=month
         ).order_by("sheets_date")
     return "complied"
+
 # print(math_fuel_norm(10, 5, 10, True))  # -> (11.5, 11.0)
 # print(math_fuel_norm(10, 5, 10, False))  # -> (10.5, 10)
 # print(remath_used_fuel(10, 5, 10, 20, 15.5, 13057, 100, 200, True))  # -> (13357, 33.5, 2.0, 0)
